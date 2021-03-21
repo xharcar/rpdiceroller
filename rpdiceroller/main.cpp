@@ -45,14 +45,14 @@ int64_t roll_and_print(RollInfo rollInfo, std::mt19937_64 &rng);
 
 int64_t roll_and_print_once(RollInfo rollInfo, std::mt19937_64 &rng, std::uniform_int_distribution<> &d);// helper fn
 
-void print_roll_vector(const std::vector<int64_t> &rolls, size_t n = std::numeric_limits<size_t>::max());
+void print_roll_vector(const std::vector<int64_t> &rolls, size_t toKeep = std::numeric_limits<size_t>::max());
 
 /**
  * @brief initializeRng Initializes a new std::mt19937_64 instance;
  * split out from main to allow for reseeding if someone says it's rigged
  * command implementation TBD
- * @return 64-bit mersenne twister instance seeded with the count of nanoseconds
- * since epoch at time of creation, give or take a jiffy
+ * @return 64-bit mersenne twister instance seeded with(by default) the count of
+ * nanoseconds since epoch at time of creation, give or take a jiffy
  */
 std::mt19937_64 initializeRng(unsigned long long seed = 0){
 	if(seed == 0){
@@ -175,7 +175,7 @@ ParseResult parseInput(std::string inputString, RollInfo &rollInfo){
 			case '+':
 			case '-':{
 				try{
-					rollInfo.modifierAfterDice = std::stol(inputString.substr(parsePos),&posIncr);
+					rollInfo.modifierAfterDice += std::stol(inputString.substr(parsePos),&posIncr);
 					parsePos += posIncr;
 				}catch(std::invalid_argument ia){
 					return UNPARSABLE_NUMBER;
@@ -230,20 +230,22 @@ int64_t roll_and_print_once(RollInfo rollInfo, std::mt19937_64 &rng, std::unifor
 	rv += rollInfo.modifierAfterDice;
 	print_roll_vector(rolls,rollInfo.diceToKeep);
 	if(rollInfo.modifierAfterDice){
-		std::cout << " + " << rollInfo.modifierAfterDice;
+		rollInfo.modifierAfterDice > 0? std::cout << " + " : std::cout << " - ";
+		std::cout << std::abs(rollInfo.modifierAfterDice);
 	}
 	std::cout << " = " << rv << std::endl;
 	return rv;
 }
 
-void print_roll_vector(const std::vector<int64_t> &rolls, size_t n){
-	size_t k = n;
+void print_roll_vector(const std::vector<int64_t> &rolls, size_t toKeep){
 	std::cout << "[ ";
 	for(size_t i=0; i<rolls.size(); i++){
-		if(i >= k){
-			std::cout << '(' << rolls[i] << ')';
-		}else{
-			std::cout << rolls[i];
+		if(i == toKeep){
+			std::cout << '(';
+		}
+		std::cout << rolls[i];
+		if(i == rolls.size()-1 && toKeep < rolls.size()){
+			std::cout << ')';
 		}
 		std::cout << ' ';
 	}
