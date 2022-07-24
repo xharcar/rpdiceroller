@@ -2,7 +2,7 @@
 Dumb console dice roller app for (TT)RPGs or other board games
 
 How to use:
-- build
+- build (or download binary)
 - run
 - q to quit
 - s to reseed RNG (with time since epoch, optionally input exact seed, must be 64-bit integer)
