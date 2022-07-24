@@ -216,7 +216,7 @@ ParseResult parseRepetition(std::string rep, RollInfo &rollInfo){
 	}else if(rep[1] >= '0' && rep[1] <= '9'){
 		try{
 			rollInfo.repeats = std::stoul(rep.substr(1));
-		}catch(std::logic_error le){
+		}catch(std::logic_error const&le){
 			return UNPARSABLE_NUMBER;
 		}
 	}else{
@@ -232,7 +232,7 @@ ParseResult parseRollOrMod(std::string roll, RollInfo &rollInfo){
 	if(dPos == std::string::npos){
 		try{
 			rollInfo.modifierAfterDice += std::stol(roll);
-		}catch(std::logic_error le){
+		}catch(std::logic_error const&le){
 			return UNPARSABLE_NUMBER;
 		}
 		return OK;
@@ -248,7 +248,7 @@ ParseResult parseRollOrMod(std::string roll, RollInfo &rollInfo){
 	if(dPos != postSignPos){
 		try{
 			sr.dieCount = std::stoul(roll.substr(postSignPos,dPos-postSignPos));
-		}catch(std::logic_error le){
+		}catch(std::logic_error const&le){
 			return UNPARSABLE_NUMBER;
 		}
 	}else{
@@ -262,7 +262,7 @@ ParseResult parseRollOrMod(std::string roll, RollInfo &rollInfo){
 		}else{
 			sr.dieSides = std::stoul(roll.substr(dPos+1,keepPos-(dPos+1)));
 		}
-	}catch(std::logic_error le){
+	}catch(std::logic_error const&le){
 		return UNPARSABLE_NUMBER;
 	}
 	if(keepPos != std::string::npos){ // keeping top/bottom k dice
@@ -278,7 +278,7 @@ ParseResult parseRollOrMod(std::string roll, RollInfo &rollInfo){
 		}
 		try{
 			sr.diceToKeep = std::stoul(roll.substr(keepPos+2));
-		}catch(std::logic_error le){
+		}catch(std::logic_error const&le){
 			return UNPARSABLE_NUMBER;
 		}
 	}
@@ -428,7 +428,7 @@ int64_t parseSeed(std::string seedString){
 	int64_t rv = 0;
 	try{
 		rv = std::stol(seedString.substr(1));
-	}catch(std::logic_error le){
+	}catch(std::logic_error const&le){
 		return 0;
 	}
 	return rv;
